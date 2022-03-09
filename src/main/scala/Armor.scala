@@ -1,7 +1,7 @@
 import scala.io.AnsiColor.{CYAN,RESET,BOLD}
 
 class Armor(d:String,n:String,c:String,h:Int,p:Int,a:Int,i:Int,w:Int) {
-  val id:String = d
+  val id:String = d //n.toLowerCase.filterNot(_.isWhitespace)
 
   val name:String = n
   val category:String = c
