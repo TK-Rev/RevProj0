@@ -1,7 +1,7 @@
 import scala.io.AnsiColor.{YELLOW,RESET,BOLD}
 
 class Weapon(i:String,n:String,c:String,d:Int,m:Int,p:Int) {
-  val id:String = i
+  var id:String = i
 
   val name:String = n
   val category:String = c
@@ -16,6 +16,18 @@ class Weapon(i:String,n:String,c:String,d:Int,m:Int,p:Int) {
   }
 
   override def toString: String = {
-    s"${YELLOW}${BOLD}$name${RESET}\n<Weapon - $category>\n[DMG:$dmg | MIT:$mit | POT:$pot]"
+    s"${YELLOW}${BOLD}$name${RESET} - ($id)\n<Weapon - $category>\n[DMG:$dmg | MIT:$mit | POT:$pot]"
+  }
+
+  def shortString: String ={
+    s"$YELLOW$BOLD$name$RESET - $id - ($category)"
+  }
+
+  def shortNoID: String ={
+    s"$YELLOW$BOLD$name$RESET - ($category)"
+  }
+
+  def reID(wew:String): Unit ={
+    id=wew
   }
 }

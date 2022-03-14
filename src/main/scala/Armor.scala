@@ -1,7 +1,7 @@
 import scala.io.AnsiColor.{CYAN,RESET,BOLD}
 
 class Armor(d:String,n:String,c:String,h:Int,p:Int,a:Int,i:Int,w:Int) {
-  val id:String = d //n.toLowerCase.filterNot(_.isWhitespace)
+  var id:String = d //n.toLowerCase.filterNot(_.isWhitespace)
 
   val name:String = n
   val category:String = c
@@ -19,6 +19,18 @@ class Armor(d:String,n:String,c:String,h:Int,p:Int,a:Int,i:Int,w:Int) {
   }
 
   override def toString: String = {
-    s"${CYAN}${BOLD}$name${RESET}\n<Armor - $category>\n[HP:$hp | PWR:$pwr | ACC:$acc | INT:$int | WIS:$wis]"
+    s"${CYAN}${BOLD}$name${RESET} - ($id)\n<Armor - $category>\n[HP:$hp | PWR:$pwr | ACC:$acc | INT:$int | WIS:$wis]"
+  }
+
+  def shortString: String ={
+    s"${CYAN}${BOLD}$name${RESET} - $id - ($category)"
+  }
+
+  def shortNoID: String ={
+    s"$CYAN$BOLD$name$RESET - ($category)"
+  }
+
+  def reID(wew:String): Unit ={
+    id=wew
   }
 }
