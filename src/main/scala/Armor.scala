@@ -23,11 +23,11 @@ class Armor(d:String,n:String,c:String,h:Int,p:Int,a:Int,i:Int,w:Int) {
   }
 
   def shortString: String ={
-    s"${CYAN}${BOLD}$name${RESET} - $id - ($category)"
+    s"${CYAN}${BOLD}$name${RESET} - $id - <$category>"
   }
 
   def shortNoID: String ={
-    s"$CYAN$BOLD$name$RESET - ($category)"
+    s"$CYAN$BOLD$name$RESET - <$category>"
   }
 
   def reID(wew:String): Unit ={

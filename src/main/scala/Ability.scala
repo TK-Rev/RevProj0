@@ -20,11 +20,11 @@ class Ability(i:String,n:String,t:String,d:String,c:Double,m:Int) {
   }
 
   def shortString: String ={
-    s"$MAGENTA$BOLD$name$RESET - $id - ($category)"
+    s"$MAGENTA$BOLD$name$RESET - $id - <$category>"
   }
 
   def shortNoID: String ={
-    s"$MAGENTA$BOLD$name$RESET - ($category)"
+    s"$MAGENTA$BOLD$name$RESET - <$category>"
   }
 
   def reID(wew:String): Unit ={

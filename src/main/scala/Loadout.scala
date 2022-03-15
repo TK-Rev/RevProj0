@@ -2,7 +2,7 @@ import scala.io.AnsiColor.{GREEN,RESET,BOLD}
 
 class Loadout(i:String,n:String,a:Armor,w1:Weapon,w2:Weapon,a1:Ability,a2:Ability) {
   // work this out later.
-  val id:String = i
+  var id:String = i
   val name:String = n
   val armor:Armor = a
   val weapon1:Weapon = w1
@@ -18,5 +18,13 @@ class Loadout(i:String,n:String,a:Armor,w1:Weapon,w2:Weapon,a1:Ability,a2:Abilit
     if(ability2!=null) outpo+=ability2.shortNoID+"\n"
 
     outpo
+  }
+
+  def reID(inpu:String): Unit ={
+    id=inpu
+  }
+
+  def shortString: String ={
+    s"$GREEN$BOLD$name$RESET - ($id)"
   }
 }

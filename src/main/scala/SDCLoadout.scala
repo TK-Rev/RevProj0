@@ -511,10 +511,11 @@ object SDCLoadout {
     var quit = false
 
     while (!quit) {
-      println("\nWhat would you like to do?\n[Create | View | Import | Export | Clear | Quit]")
+      println("\nWhat would you like to do?\n[Create | View | File | Import | Export | Clear | Quit]")
       readLine.toLowerCase match {
         case "create" => Create()
         case "view" => View()
+        case "file" => File()
         case "import" => Import()
         case "export" => Export()
         case "clear" => Clear()
@@ -542,8 +543,8 @@ object SDCLoadout {
         dbAb.foreach(e=>println(e.toString))
         abis.foreach(e=>println(e.toString))
       case "loadout" | "loadouts" | "lo" =>
-        dbLo.foreach(e=>println(e.toString+"\n"))
-        loas.foreach(e=>println(e.toString+"\n"))
+        dbLo.foreach(e=>println(e.toString))
+        loas.foreach(e=>println(e.toString))
       case "back" => // do nothing.
       case _ => {
         println("Input unclear.")
@@ -565,8 +566,18 @@ object SDCLoadout {
       }
     }
   }
+  def File(): Unit ={
+    println("This will read from a .csv to add Armor, Weapons, and Abilities to your local area.")
+    println("Continue? [Y/N]")
+    readLine.toLowerCase match {
+      case "y" => {
+        println("File name, located in the 'files/' folder within this program.")
+        FileAccess.grabFrom(readLine)
+      }
+    }
+  }
   def Import(): Unit ={
-    println("what would you like to import?\n[Armors | Weapons | Abilities | All | Back]")
+    println("What would you like to import?\n[Armors | Weapons | Abilities | All | Back]")
     readLine.toLowerCase match {
       case "armor" | "armors" => ImportArmorSpec()
       case "weapon" | "weapons" => ImportWeaponSpec()
@@ -587,14 +598,24 @@ object SDCLoadout {
   }
   def Export(): Unit ={
     println("This will first import from your database to check IDs, then export your local creations to your database.")
-    println("Continue? [Y/N]")
+    //println("Continue? [Y/N]")
+    println("What would you like to export?")
+    println("[Armors | Weapons | Abilities | Loadouts | All | Back]")
     readLine.toLowerCase match {
-      case "y" => { // TODO: just have a temporary import here that does it just to check (using SelDBArmor/etc) for IDs.
-        println("Exporting armors...")
-        DBAccess.uploArmor(arms)
+      case "armors" | "armor" => ExportArmor()
+      case "weapons" | "weapon" => ExportWeapons()
+      case "abilities" | "ability" => ExportAbilities()
+      case "loadouts" | "loadout" | "lo" => ExportLoadout()
+      case "all" => {
+        ExportLoadout()
+        ExportArmor()
+        ExportWeapons()
+        ExportAbilities()
       }
+      case "back" => // do nothing.
       case _ => {
-        println("Cancelled!")
+        println("Input unclear.")
+        Export()
       }
     }
   }
@@ -729,6 +750,16 @@ object SDCLoadout {
     }
     null
   }
+  def SelDBLoadout(inpu:String): Loadout ={
+    var cort:Loadout = null
+    for(i<-dbLo){
+      if(i.id==inpu||i.name==inpu){
+        cort = i
+        return cort
+      }
+    }
+    null
+  }
 
   def ImportArmorSpec(): Unit ={
     println("What category of armors to import?")
@@ -845,7 +876,234 @@ object SDCLoadout {
     val newSet = DBAccess.getLoadouts()
     dbLo.prependAll(newSet)
     //loaIn+=newSet.length
-    println("Imported "+newSet.length+" loadouts!")
   }
 
+  def ExportArmor(): Unit ={
+    ImportArmor()
+    println("Verifying armor IDs...")
+    var abort = false
+    arms.foreach(e=>{
+      var iddy = e.id
+      var auto = 0
+      var other:Armor = null
+      var choice = false
+
+      do {
+        if(!choice&&other!=null) {
+          println("There is a conflicting id error;")
+          println(e.shortString+"\nand\n"+other.shortString)
+          println("How would you like to solve this?")
+          println("[Custom | Auto | Remove | Cancel]")
+
+          readLine.toLowerCase match {
+            case "custom" => {
+              println("Enter a new id for your item. It will be lowercase and without spaces.")
+              iddy = readLine.toLowerCase.filterNot(_.isWhitespace)
+            }
+            case "auto" => {
+              println("Activated autosolve...")
+              auto+=1
+              choice = true
+            }
+            case "remove" => {
+              println("This will remove;")
+              println(e.shortString)
+              println("Confirm? [Y/N]")
+              readLine.toLowerCase match {
+                case "y" =>
+                  arms-=e
+                  iddy = "i n t e n t   b r e a k"
+                case _ =>
+                  println("Cancelled.")
+              }
+            }
+          }
+        }
+        if(choice){
+          iddy = e.id+auto
+          auto+=1
+        }
+        other = SelDBArmor(iddy) // just check the armor DB array for a matching ID, and change if we find it.
+      } while (other!=null)
+      e.reID(iddy)
+    })
+
+    if (!abort) {
+      println("Exporting armors...")
+      DBAccess.uploArmor(arms)
+    } else {
+      println("Cancelled!")
+    }
+  }
+  def ExportWeapons(): Unit ={
+    ImportWeapon()
+    println("Verifying weapon IDs...")
+    var abort = false
+    weps.foreach(e=>{
+      var iddy = e.id
+      var auto = 0
+      var other:Weapon = null
+      var choice = false
+
+      do {
+        if(!choice&&other!=null) {
+          println("There is a conflicting id error;")
+          println(e.shortString+"\nand\n"+other.shortString)
+          println("How would you like to solve this?")
+          println("[Custom | Auto | Remove | Cancel]")
+
+          readLine.toLowerCase match {
+            case "custom" => {
+              println("Enter a new id for your item. It will be lowercase and without spaces.")
+              iddy = readLine.toLowerCase.filterNot(_.isWhitespace)
+            }
+            case "auto" => {
+              println("Activated autosolve...")
+              auto+=1
+              choice = true
+            }
+            case "remove" => {
+              println("This will remove;")
+              println(e.shortString)
+              println("Confirm? [Y/N]")
+              readLine.toLowerCase match {
+                case "y" =>
+                  weps-=e
+                  iddy = "i n t e n t   b r e a k"
+                case _ =>
+                  println("Cancelled.")
+              }
+            }
+          }
+        }
+        if(choice){
+          iddy = e.id+auto
+          auto+=1
+        }
+        other = SelDBWeapon(iddy) // just check the armor DB array for a matching ID, and change if we find it.
+      } while (other!=null)
+      e.reID(iddy)
+    })
+
+    if (!abort) {
+      println("Exporting weapons...")
+      DBAccess.uploWeapon(weps)
+    } else {
+      println("Cancelled!")
+    }
+  }
+  def ExportAbilities(): Unit ={
+    ImportAbility()
+    println("Verifying ability IDs...")
+    var abort = false
+    abis.foreach(e=>{
+      var iddy = e.id
+      var auto = 0
+      var other:Ability = null
+      var choice = false
+
+      do {
+        if(!choice&&other!=null) {
+          println("There is a conflicting id error;")
+          println(e.shortString+"\nand\n"+other.shortString)
+          println("How would you like to solve this?")
+          println("[Custom | Auto | Remove | Cancel]")
+
+          readLine.toLowerCase match {
+            case "custom" => {
+              println("Enter a new id for your item. It will be lowercase and without spaces.")
+              iddy = readLine.toLowerCase.filterNot(_.isWhitespace)
+            }
+            case "auto" => {
+              println("Activated autosolve...")
+              auto+=1
+              choice = true
+            }
+            case "remove" => {
+              println("This will remove;")
+              println(e.shortString)
+              println("Confirm? [Y/N]")
+              readLine.toLowerCase match {
+                case "y" =>
+                  abis-=e
+                  iddy = "i n t e n t   b r e a k"
+                case _ =>
+                  println("Cancelled.")
+              }
+            }
+          }
+        }
+        if(choice){
+          iddy = e.id+auto
+          auto+=1
+        }
+        other = SelDBAbility(iddy) // just check the armor DB array for a matching ID, and change if we find it.
+      } while (other!=null)
+      e.reID(iddy)
+    })
+
+    if (!abort) {
+      println("Exporting abilities...")
+      DBAccess.uploAbility(abis)
+    } else {
+      println("Cancelled!")
+    }
+  }
+  def ExportLoadout(): Unit ={
+    ImportLoadout()
+    println("Verifying loadout IDs...")
+    var abort = false
+    loas.foreach(e=>{
+      var iddy = e.id
+      var auto = 0
+      var other:Loadout = null
+      var choice = false
+
+      do {
+        if(!choice&&other!=null) {
+          println("There is a conflicting id error;")
+          println(e.shortString+"\nand\n"+other.shortString)
+          println("How would you like to solve this?")
+          println("[Custom | Auto | Remove | Cancel]")
+
+          readLine.toLowerCase match {
+            case "custom" => {
+              println("Enter a new id for your item. It will be lowercase and without spaces.")
+              iddy = readLine.toLowerCase.filterNot(_.isWhitespace)
+            }
+            case "auto" => {
+              println("Activated autosolve...")
+              auto+=1
+              choice = true
+            }
+            case "remove" => {
+              println("This will remove;")
+              println(e.shortString)
+              println("Confirm? [Y/N]")
+              readLine.toLowerCase match {
+                case "y" =>
+                  loas-=e
+                  iddy = "i n t e n t   b r e a k"
+                case _ =>
+                  println("Cancelled.")
+              }
+            }
+          }
+        }
+        if(choice){
+          iddy = e.id+auto
+          auto+=1
+        }
+        other = SelDBLoadout(iddy) // just check the armor DB array for a matching ID, and change if we find it.
+      } while (other!=null)
+      e.reID(iddy)
+    })
+
+    if (!abort) {
+      println("Exporting abilities...")
+      DBAccess.uploLoadout(loas)
+    } else {
+      println("Cancelled!")
+    }
+  }
 }

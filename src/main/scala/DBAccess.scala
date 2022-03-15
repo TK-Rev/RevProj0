@@ -179,6 +179,7 @@ object DBAccess {
       }
     }
     dropConnect()
+    println("Imported "+loas.length+" loadouts!")
     loas
   }
 
@@ -197,10 +198,82 @@ object DBAccess {
       val wis = e.wis
 
       statement.executeUpdate(s"INSERT INTO armors(id,armName,category,hp,pwr,acc,inte,wis)\nVALUES (\'$id\',\'$name\',\'$cate\',$hp,$pwr,$acc,$int,$wis);")
+
+      arms-=e
     })
 
     dropConnect()
     println(s"Exported $tote armors!")
+    println("You can find your exported armors by re-importing!")
   }
 
+  def uploWeapon(weps:ArrayBuffer[Weapon]): Unit ={
+    getConnect()
+    val tote = weps.length
+
+    weps.foreach(e=>{
+      val id = e.id
+      val name = e.name
+      val cate = e.category
+      val dmg = e.dmg
+      val mit = e.mit
+      val pot = e.pot
+
+      statement.executeUpdate(s"INSERT INTO weapons(id,wepName,category,dmg,mit,pot)\nVALUES (\'$id\',\'$name\',\'$cate\',$dmg,$mit,$pot);")
+
+      weps-=e
+    })
+
+    dropConnect()
+    println(s"Exported $tote weapons!")
+    println("You can find your exported weapons by re-importing!")
+  }
+
+  def uploAbility(abis:ArrayBuffer[Ability]): Unit ={
+    getConnect()
+    val tote = abis.length
+
+    abis.foreach(e=>{
+      val id = e.id
+      val name = e.name
+      val cate = e.category
+      val desco = e.desc
+      val cd = e.cd
+      val mp = e.mp
+
+      statement.executeUpdate(s"INSERT INTO abilities(id,abiName,category,desco,cd,mp)\nVALUES(\'$id\',\'$name\',\'$cate\',\'$desco\',$cd,$mp);")
+
+      abis-=e
+    })
+
+    dropConnect()
+    println(s"Exported $tote abilities!")
+    println("You can find your exported abilities by re-importing!")
+  }
+
+  def uploLoadout(loas:ArrayBuffer[Loadout]): Unit ={
+    getConnect()
+    val tote = loas.length
+
+    loas.foreach(e=>{
+      val id = e.id
+      val name = e.name
+      val arm = e.armor.id
+      val wep1 = e.weapon1.id
+
+      var wep2:String = null
+      if(e.weapon2!=null) wep2 = "\'"+e.weapon2.id+"\'"
+      var abi1:String = null
+      if(e.ability1!=null) abi1 = "\'"+e.ability1.id+"\'"
+      var abi2:String = null
+      if(e.ability2!=null) abi2 = "\'"+e.ability2.id+"\'"
+
+      statement.executeUpdate(s"INSERT INTO loadouts(id,loaName,armID,wepID,wep2ID,abiID,abi2ID)\nVALUES(\'$id\',\'$name\',\'$arm\',\'$wep1\',$wep2,$abi1,$abi2);")
+      loas-=e
+    })
+
+    dropConnect()
+    println(s"Exported $tote loadouts!")
+    println("You can find your exported loadouts by re-importing!")
+  }
 }

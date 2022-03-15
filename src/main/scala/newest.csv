@@ -1,0 +1,9 @@
+Armor, basedarmor, Based Armor, Tank, 115, 11, 4, 2, 7
+Armor, luckarmor, Luck Armor, Melee, 45, 19, 2, 2, 2
+Armor, grindarmor, Grind Armor, Melee, 35, 20, 2, 2, 4
+Weapon, slamham, Slam Ham, 2H Melee, 30, 5, 5
+Weapon, headhunter, Headhunter, Ranged, 25, 0, 3
+Weapon, brickwall, Brick Wall, Shield, 5, 12, 8
+Ability, reckless, Reckless, Melee, Go crazy and swing your weapons all over!, 15.5, 50
+Ability, trueshot, True Shot, Ranged, Nail an enemy with a shot that jumps to nearby enemies at half damage., 12.5, 50
+Ability, healbeam, Heal Beam, Magic, Shoots out a beam of light that heals allies., 5.5, 35

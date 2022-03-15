@@ -20,11 +20,11 @@ class Weapon(i:String,n:String,c:String,d:Int,m:Int,p:Int) {
   }
 
   def shortString: String ={
-    s"$YELLOW$BOLD$name$RESET - $id - ($category)"
+    s"$YELLOW$BOLD$name$RESET - $id - <$category>"
   }
 
   def shortNoID: String ={
-    s"$YELLOW$BOLD$name$RESET - ($category)"
+    s"$YELLOW$BOLD$name$RESET - <$category>"
   }
 
   def reID(wew:String): Unit ={
