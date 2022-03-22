@@ -66,7 +66,7 @@ object SDCLoadout {
     println("WIS | Wisdom?")
     val wis = readInt
     var id = name.toLowerCase.filterNot(_.isWhitespace)
-    var auto = 0 // for autosolving the id
+    var auto = 1 // for autosolving the id
 
     //<editor-fold desc="Check">
     do {
@@ -93,7 +93,9 @@ object SDCLoadout {
           }
         }
       }
-      auto+=1
+
+      if (auto!=1) auto+=1
+
       checkVal = SelArmor(id)
     }while(checkVal!=null)
     //</editor-fold>
@@ -153,7 +155,7 @@ object SDCLoadout {
     println("POT | Potency?")
     val pot = readInt
     var id = name.toLowerCase.filterNot(_.isWhitespace)
-    var auto = 0 // for autosolve
+    var auto = 1 // for autosolve
 
     //<editor-fold desc="VerifyID">
     do {
@@ -181,7 +183,7 @@ object SDCLoadout {
         }
       }
 
-      auto+=1
+      if (auto!=1) auto+=1
 
       checkVal = SelWeapon(id)
     }while(checkVal!=null)
@@ -276,7 +278,8 @@ object SDCLoadout {
           }
         }
       }
-      auto+=1
+      if (auto!=1) auto+=1
+
       checkVal = SelAbility(id)
     }while(checkVal!=null)
     //</editor-fold>
@@ -495,6 +498,8 @@ object SDCLoadout {
           }
         }
       }
+
+      if (auto!=1) auto+=1
     } while (!valid)
     //</editor-fold>
 
@@ -573,6 +578,9 @@ object SDCLoadout {
       case "y" => {
         println("File name, located in the 'files/' folder within this program.")
         FileAccess.grabFrom(readLine)
+      }
+      case _ => {
+        println("Cancelled!")
       }
     }
   }
